@@ -15,9 +15,11 @@ class AnalogClock extends HTMLElement {
       this.content.style.padding = "5px";
       
       // Add the canvas
-      var canvas = this.content.createElement('canvas')
+      var canvas = document.createElement('canvas');
       canvas.width = config.diameter;
       canvas.height = config.diameter;
+      
+      this.content.appendChild(canvas);
       
       // Adjust radius
       var radius = (canvas.width < canvas.height) ? canvas.width / 2.1 : canvas.height / 2.1;
