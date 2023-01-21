@@ -1,72 +1,93 @@
 class AnalogClock extends HTMLElement {
   set hass(hass) {
+    
     if (!this.content) {
+      
+      // Obtain configuration
       var config = this.config;
-      const card = document.createElement('ha-card');
+      
+      var canvasSize = (config.diameter) ? ` width="${config.diameter}px" height="${config.diameter}px"` : '';
+
+      // Create the content div
       this.content = document.createElement('div');
       this.content.style.display = "flex";
       this.content.style.justifyContent = "center";
       this.content.style.padding = "5px";
-      //this.content.innerHTML = `<canvas width="300px" height="300px"></canvas>`;
-      var canvasSize = (config.diameter) ? ` width="${config.diameter}px" height="${config.diameter}px"` : '';
-      this.content.innerHTML = `<canvas${canvasSize}></canvas>`;
-      //this.content.innerHTML = `<canvas></canvas>`;
+      
+      // Add the canvas
+      var canvas = this.content.createElement('canvas')
+      canvas.width = config.diameter;
+      canvas.height = config.diameter;
+      
+      // Adjust radius
+      var radius = (canvas.width < canvas.height) ? canvas.width / 2.1 : canvas.height / 2.1;
+      
+      // Create a card
+      const card = document.createElement('ha-card');
       card.appendChild(this.content);
       this.appendChild(card);
-      var canvas = this.content.children[0];
+      
+      // Obtain a drawing canvas
       var ctx = canvas.getContext("2d");
       ctx.textAlign = "center";
       ctx.textBaseline = 'middle';
-      var radius = (canvas.width < canvas.height) ? canvas.width / 2.1 : canvas.height / 2.1;
       ctx.translate(canvas.width / 2, canvas.height / 2);
 
-      drawClock();
+      drawClock(ctx);
+      
       if (this.hide_SecondHand) {
-        setInterval(drawClock, 10000);
+        setInterval(drawClock, 10000, ctx);
       } else {
-        setInterval(drawClock, 1000);
+        setInterval(drawClock, 1000, ctx);
       }
 
-      function drawClock() {
+      function drawClock(ctx) {
         try {
-          getConfig();
-          var now = new Date();
-          //var options = { timeZone: 'Europe/London', minute: 'numeric' },
+          
+          var config = getConfig();
+          
           if (config.timezone) { options = { timeZone: timezone } };
-          var year = now.toLocaleString('sv-SE', { year: 'numeric', timeZone: timezone });
+          
+          var now = new Date();
+          var year = now.toLocaleString('sv-SE', { year: 'numeric', timeZone: config.timezone });
           var month = now.toLocaleString('sv-SE', { month: 'numeric', timeZone: timezone });
           var day = now.toLocaleString('sv-SE', { day: 'numeric', timeZone: timezone });
           var hour = now.toLocaleString('sv-SE', { hour: 'numeric', timeZone: timezone });
           var minute = now.toLocaleString('sv-SE', { minute: 'numeric', timeZone: timezone });
           var second = now.toLocaleString('sv-SE', { second: 'numeric', timeZone: timezone });
+          
           now = new Date(year, month - 1, day, hour, minute, second);
-          if (demo) now = new Date(2021, 1, 10, 10, 8, 20);
+          
           drawFace(ctx, radius, color_Background);
           drawTicks(ctx, radius, color_Ticks);
+          
           if (!hide_FaceDigits) { drawFaceDigits(ctx, radius, color_FaceDigits) };
           if (!hide_Date) { drawDate(ctx, now, locale, radius, color_Text) };
           if (!hide_WeekDay) { drawWeekday(ctx, now, locale, radius, color_Text) };
           if (!hide_WeekNumber) { drawWeeknumber(ctx, now, locale, radius, color_Text) };
           if (!hide_DigitalTime) { drawTime(ctx, now, locale, radius, color_DigitalTime, timezone) };
+          
           var options = { hour: '2-digit', hour12: false };
           hour = now.toLocaleTimeString("sv-SE", options);
           options = { minute: '2-digit', hour12: false };
-          minute = now.toLocaleTimeString("sv-SE", options);
+
           // drawHandX(ctx, ang, length, width, color, style)  ang in degrees
           drawHand(ctx, (Number(hour) + Number(minute) / 60) * 30, radius * 0.5, radius / 20, color_HourHand, style_HourHand);
           drawHand(ctx, (Number(minute) + now.getSeconds() / 60) * 6, radius * 0.8, radius / 20, color_MinuteHand, style_MinuteHand);
           if (!hide_SecondHand) { drawHand(ctx, (now.getSeconds()) * 6, radius * 0.8, 0, color_SecondHand, style_SecondHand) };
         }
         catch (err) {
+          
           ctx.font = '20px Sans-Serif';
           ctx.textAlign = "left";
           ctx.fillStyle = 'red';
+          
           var message = err.message;
           var words = message.split(' ');
           var line = '';
           var maxWidth = canvas.width - 20;
           var lineHeight = 24;
-          //var x = maxWidth;
+          
           var x = maxWidth / 2;
           var y = -60;
 
@@ -135,6 +156,7 @@ class AnalogClock extends HTMLElement {
       }
 
       function drawHand(ctx, ang, length, width, color, style) {
+        
         // Omvandla ang till radianer
         var angrad = (ang - 90) * Math.PI / 180;
         width = width > 0 ? width : 1;
@@ -309,6 +331,7 @@ class AnalogClock extends HTMLElement {
       }
 
       function getConfig() {
+        
         globalThis.color_Background = getComputedStyle(document.documentElement).getPropertyValue('--primary-background-color');
         if (config.color_Background) color_Background = config.color_Background;
         if (config.color_background) color_Background = config.color_background;
