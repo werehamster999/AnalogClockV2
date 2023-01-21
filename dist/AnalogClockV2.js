@@ -494,4 +494,4 @@ class AnalogClock extends HTMLElement {
   }
 }
 
-customElements.define('analog-clock', AnalogClock);
+customElements.define('analog-clock-v2', AnalogClock);
