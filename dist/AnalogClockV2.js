@@ -1,39 +1,37 @@
 class AnalogClock extends HTMLElement {
+  
   set hass(hass) {
     
     if (!this.content) {
       
       // Obtain configuration
-      var config = this.config;
+      var _config = this.config;
       
-      var canvasSize = (config.diameter) ? ` width="${config.diameter}px" height="${config.diameter}px"` : '';
+      // Create the initial ha-card
+      this.card = this.appendChild(document.createElement('ha-card'));
+      
+      // Create the nested blank element nodes
+      this.content = this.card.appendChild(document.createElement('div'));      
+      this.canvas = this.content.appendChild(document.createElement('canvas'));
 
-      // Create the content div
-      this.content = document.createElement('div');
+      
+      // Amend the outer content div element
       this.content.style.display = "flex";
       this.content.style.justifyContent = "center";
       this.content.style.padding = "5px";
       
-      // Add the canvas
-      var canvas = document.createElement('canvas');
-      canvas.width = config.diameter;
-      canvas.height = config.diameter;
+      // Amend the inner content canvas element
+      this.canvas.width = _config.diameter;
+      this.canvas.height = _config.diameter;
       
-      this.content.appendChild(canvas);
+      // Adjust radius to fit inside canvas
+      var radius = (this.canvas.width < this.canvas.height) ? this.canvas.width / 2.1 : this.canvas.height / 2.1;
       
-      // Adjust radius
-      var radius = (canvas.width < canvas.height) ? canvas.width / 2.1 : canvas.height / 2.1;
-      
-      // Create a card
-      const card = document.createElement('ha-card');
-      card.appendChild(this.content);
-      this.appendChild(card);
-      
-      // Obtain a drawing canvas
-      var ctx = canvas.getContext("2d");
+      // Find centre for drawing 
+      var ctx = this.canvas.getContext("2d");
       ctx.textAlign = "center";
       ctx.textBaseline = 'middle';
-      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 
       drawClock(ctx);
       
