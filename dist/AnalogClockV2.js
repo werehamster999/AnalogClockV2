@@ -482,9 +482,187 @@ class AnalogClock extends HTMLElement {
       }
     }
   }
+  
+  getDefaultLayout() {
+    
+    // Gets default values for the cards features
+    // (Note - As the original based the size of card on the clock diameter, 
+    //  we'll consider that as part of the card "layout" until otherwise needed)
+    var defaultLayout = [];
+    
+    defaultLayout.diameter = 150;
 
+  }
+  
+  updateLayout(oldLayout,newLayout) {
+    
+    // Updates the layout, if changed
+    // (Note - this does nothing for compatibility as the only "layout" property
+    //  is the clock diameter which is not changeable in previous versions)
+    var layout = oldLayout;
+    
+    return layout;
+  }
+  
+  getDefaultConfig() {
+    
+    // Gets default values for the clocks features
+    var defaultConfig = [];
+        
+    defaultConfig.color_background = getComputedStyle(document.documentElement).getPropertyValue('--primary-background-color');
+    defaultConfig.color_ticks = 'Silver';
+    defaultConfig.color_facedigits = 'Silver';
+    defaultConfig.color_digitaltime = '#CCCCCC';
+    defaultConfig.color_hourhand = '#CCCCCC';
+    defaultConfig.color_minutehand = '#EEEEEE';
+    defaultConfig.color_secondhand = 'Silver';
+    defaultConfig.color_time = 'Silver';
+    defaultConfig.color_text = 'Silver';
+    
+    defaultConfig.locale = hass.language;
+    defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;;
+    defaultConfig.timezonedisplayname = "";
+    defaultConfig.dateformat = "";
+    defaultConfig.timeformat = "";
+   
+    defaultConfig.show_timezone = false;
+    
+    defaultConfig.hide_minorticks = false;
+    defaultConfig.hide_weeknumber = true;
+    defaultConfig.hide_facedigits = false;
+    defaultConfig.hide_date = false;
+    defaultConfig.hide_weekday = false;
+    defaultConfig.hide_digitaltime = false;
+    defaultConfig.hide_secondhand = false;
+    
+    defaultConfig.style_hourhand = false;
+    defaultConfig.style_minutehand = false;
+    defaultConfig.style_secondhand = false;
+    
+    defaultConfig.demo = false;
+        
+    return defaultConfig;
+
+  }
+  
+  updateConfig(oldConfig,newConfig) {
+    
+    // Updates the config, if changed
+    // (Note - No validty checks just copying of objects)
+    
+    var config = [];
+    
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_ticks = newConfig.color_ticks ?? oldConfig.color_ticks
+    config.color_facedigits = newConfig.color_facedigits ?? oldConfig.color_facedigits
+    config.color_digitaltime = newConfig.color_digitaltime ?? oldConfig.color_digitaltime
+    config.color_hourhand = newConfig.color_hourhand ?? oldConfig.color_hourhand
+    config.color_minutehand = newConfig.color_minutehand ?? oldConfig.color_minutehand
+    config.color_secondhand = newConfig.color_secondhand ?? oldConfig.color_secondhand
+    config.color_time = newConfig.color_time ?? oldConfig.color_time
+    config.color_text = newConfig.color_text ?? oldConfig.color_text
+    
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    config.color_background = newConfig.color_background ?? oldConfig.color_background
+    
+    if (newConfig.hide_minorticks == true) { newConfig.hide_MinorTicks = true };
+    if (newConfig.hide_minorticks == false) { hide_MinorTicks = false };
+    if (themes[i].color_facedigits) { color_FaceDigits = newConfig.color_facedigits };
+    if (themes[i].locale) { locale = themes[i].locale };
+    if (themes[i].color_digitaltime) { color_DigitalTime = newConfig.color_digitaltime };
+    if (themes[i].color_hourhand) { color_HourHand = newConfig.color_hourhand };
+    if (themes[i].color_minutehand) { color_MinuteHand = newConfig.color_minutehand };
+    if (themes[i].color_secondhand) { color_SecondHand = newConfig.color_secondhand };
+    if (themes[i].color_time) { color_Time = newConfig.color_time };
+    if (themes[i].color_text) { color_Text = newConfig.color_text };
+    if (themes[i].timezonedisplayname) { timezonedisplayname = newConfig.timezonedisplayname };
+    if (themes[i].show_timezone == true) { showtimezone = true };
+    if (themes[i].show_timezone == false) { showtimezone = false };
+    if (themes[i].hide_weeknumber == true) { hide_WeekNumber = true };
+    if (themes[i].hide_weeknumber == false) { hide_WeekNumber = false };
+    if (themes[i].hide_facedigits == true) { hide_FaceDigits = true };
+    if (themes[i].hide_facedigits == false) { hide_FaceDigits = false };
+    if (themes[i].hide_date == true) { hide_Date = true };
+    if (themes[i].hide_date == false) { hide_Date = false };
+    if (themes[i].hide_weekday == true) { hide_WeekDay = true };
+    if (themes[i].hide_weekday == false) { hide_WeekDay = false };
+    if (themes[i].hide_digitaltime == true) { hide_DigitalTime = true };
+    if (themes[i].hide_digitaltime == false) { hide_DigitalTime = false };
+    if (themes[i].hide_secondhand == true) { hide_SecondHand = true };
+    if (themes[i].hide_secondhand == false) { hide_SecondHand = false };
+    if (themes[i].style_hourhand) { style_HourHand = themes[i].style_hourhand };
+    if (themes[i].style_minutehand) { style_MinuteHand = themes[i].style_minutehand };
+    if (themes[i].style_secondhand) { style_SecondHand = themes[i].style_secondhand };
+    if (themes[i].dateformat) { dateFormat = themes[i].dateformat };
+    if (themes[i].timeformat) { timeFormat = themes[i].timeformat };
+
+    
+    return oldConfig;
+  }
+  getDefaultThemes() {
+    
+    // Gets default values for the theme list
+    var defaultConfig.themes = [];
+    return defaultConfig;
+
+  }
+  
+  getActiveTheme() {
+    
+    var newTheme = [];
+    var themes = this._themes;
+    
+    if (themes) {
+      try {
+        for (var i = 0; i < themes.length; i++) {
+          if (themes[i].time) {
+            var startTime = new Date();
+            var endTime = new Date();
+            startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
+            startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
+            startTime.setSeconds(0);
+            endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
+            endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
+            endTime.setSeconds(0);
+          }
+          
+          var now = Date.now();
+          
+          if ((endTime > startTime && (now > startTime && now < endTime)) || (endTime < startTime && (now > startTime || now < endTime))) { 
+            newTheme = themes[i];
+          }
+        }
+      } catch (err) {
+    }      
+    return newTheme;
+  }
+  
   setConfig(config) {
-    this.config = config;
+    
+    // Split up the configuration items into relevant objects
+    
+    this._layout = getDefaultLayout();
+    this._layout = updateLayout(this._layout,config);
+    
+    this._config = getDefaultConfig();
+    this._config = updateConfig(this._config,config);
+    
+    this._themes = getDefaultThemes();    
+    this._themes = updateThemes(this._themes,config);
+    
+    this._active = this._config;
+    
+  }
+  
+  applyConfig(originalConfig,newConfig) {
   }
 
   getCardSize() {
