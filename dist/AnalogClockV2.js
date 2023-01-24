@@ -384,7 +384,7 @@ class AnalogClock2 extends HTMLElement {
         return defaultLayout;
       }
 
-      updateLayout(oldLayout, newLayout) {
+      function updateLayout(oldLayout, newLayout) {
 
         // Updates the layout, if changed
         //
@@ -397,7 +397,7 @@ class AnalogClock2 extends HTMLElement {
         return layout;
       }
 
-      getDefaultConfig() {
+      function getDefaultConfig() {
 
         // Gets default values for the clocks features
 
@@ -439,7 +439,7 @@ class AnalogClock2 extends HTMLElement {
 
       }
 
-      updateConfig(oldConfig, newConfig) {
+      function updateConfig(oldConfig, newConfig) {
 
         // Updates the config, with values from the newConfig, if they exist
         //
@@ -535,7 +535,7 @@ class AnalogClock2 extends HTMLElement {
         return config;
       }
 
-      updateThemes(oldThemes, newThemes) {
+      function updateThemes(oldThemes, newThemes) {
 
         // Updates the themes, with values from the newThemes, if they exist
         //
@@ -554,7 +554,7 @@ class AnalogClock2 extends HTMLElement {
 
       }
 
-      getDefaultThemes() {
+      function getDefaultThemes() {
 
         // Gets default values for the theme list
 
