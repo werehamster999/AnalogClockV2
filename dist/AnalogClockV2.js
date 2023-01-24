@@ -856,7 +856,9 @@ class AnalogClock2 extends HTMLElement {
             newTheme = themes[i];
           }
         }
-      } catch (err) {}
+      }
+      catch (err) {
+      }
       
       return newTheme;
     }
