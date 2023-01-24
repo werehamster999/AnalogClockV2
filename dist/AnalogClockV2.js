@@ -1,36 +1,36 @@
-class AnalogClock extends HTMLElement {
-  
+class AnalogClock2 extends HTMLElement {
+
   set hass(hass) {
-    
+
     if (!this.content) {
-            
+
       // Create the initial ha-card
       this.card = this.appendChild(document.createElement('ha-card'));
-      
+
       // Create the nested blank element nodes
-      this.content = this.card.appendChild(document.createElement('div'));      
+      this.content = this.card.appendChild(document.createElement('div'));
       this.canvas = this.content.appendChild(document.createElement('canvas'));
-      
+
       // Amend the outer content div element
       this.content.style.display = "flex";
       this.content.style.justifyContent = "center";
       this.content.style.padding = "5px";
-      
+
       // Amend the inner content canvas element
       this.canvas.width = this._layout.diameter;
       this.canvas.height = this._layout.diameter;
-      
+
       // Adjust radius to fit inside canvas
       var radius = (this.canvas.width < this.canvas.height) ? this.canvas.width / 2.1 : this.canvas.height / 2.1;
-      
-      // Find centre for drawing 
+
+      // Find centre for drawing
       var ctx = this.canvas.getContext("2d");
       ctx.textAlign = "center";
       ctx.textBaseline = 'middle';
       ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
 
       //drawClock(ctx);
-      
+
       //if (this.hide_SecondHand) {
       //  setInterval(drawClock, 10000, ctx);
       //} else {
@@ -39,51 +39,90 @@ class AnalogClock extends HTMLElement {
 
       function drawClock(ctx) {
         try {
-          
+
           var config = getConfig();
-          
-          if (config.timezone) { options = { timeZone: timezone } };
-          
+
+          if (config.timezone) {
+            options = {
+              timeZone: timezone
+            }
+          };
+
           var now = new Date();
-          var year = now.toLocaleString('sv-SE', { year: 'numeric', timeZone: config.timezone });
-          var month = now.toLocaleString('sv-SE', { month: 'numeric', timeZone: timezone });
-          var day = now.toLocaleString('sv-SE', { day: 'numeric', timeZone: timezone });
-          var hour = now.toLocaleString('sv-SE', { hour: 'numeric', timeZone: timezone });
-          var minute = now.toLocaleString('sv-SE', { minute: 'numeric', timeZone: timezone });
-          var second = now.toLocaleString('sv-SE', { second: 'numeric', timeZone: timezone });
-          
+          var year = now.toLocaleString('sv-SE', {
+            year: 'numeric',
+            timeZone: config.timezone
+          });
+          var month = now.toLocaleString('sv-SE', {
+            month: 'numeric',
+            timeZone: timezone
+          });
+          var day = now.toLocaleString('sv-SE', {
+            day: 'numeric',
+            timeZone: timezone
+          });
+          var hour = now.toLocaleString('sv-SE', {
+            hour: 'numeric',
+            timeZone: timezone
+          });
+          var minute = now.toLocaleString('sv-SE', {
+            minute: 'numeric',
+            timeZone: timezone
+          });
+          var second = now.toLocaleString('sv-SE', {
+            second: 'numeric',
+            timeZone: timezone
+          });
+
           now = new Date(year, month - 1, day, hour, minute, second);
-          
+
           drawFace(ctx, radius, color_Background);
           drawTicks(ctx, radius, color_Ticks);
-          
-          if (!hide_FaceDigits) { drawFaceDigits(ctx, radius, color_FaceDigits) };
-          if (!hide_Date) { drawDate(ctx, now, locale, radius, color_Text) };
-          if (!hide_WeekDay) { drawWeekday(ctx, now, locale, radius, color_Text) };
-          if (!hide_WeekNumber) { drawWeeknumber(ctx, now, locale, radius, color_Text) };
-          if (!hide_DigitalTime) { drawTime(ctx, now, locale, radius, color_DigitalTime, timezone) };
-          
-          var options = { hour: '2-digit', hour12: false };
+
+          if (!hide_FaceDigits) {
+            drawFaceDigits(ctx, radius, color_FaceDigits)
+          };
+          if (!hide_Date) {
+            drawDate(ctx, now, locale, radius, color_Text)
+          };
+          if (!hide_WeekDay) {
+            drawWeekday(ctx, now, locale, radius, color_Text)
+          };
+          if (!hide_WeekNumber) {
+            drawWeeknumber(ctx, now, locale, radius, color_Text)
+          };
+          if (!hide_DigitalTime) {
+            drawTime(ctx, now, locale, radius, color_DigitalTime, timezone)
+          };
+
+          var options = {
+            hour: '2-digit',
+            hour12: false
+          };
           hour = now.toLocaleTimeString("sv-SE", options);
-          options = { minute: '2-digit', hour12: false };
+          options = {
+            minute: '2-digit',
+            hour12: false
+          };
 
           // drawHandX(ctx, ang, length, width, color, style)  ang in degrees
           drawHand(ctx, (Number(hour) + Number(minute) / 60) * 30, radius * 0.5, radius / 20, color_HourHand, style_HourHand);
           drawHand(ctx, (Number(minute) + now.getSeconds() / 60) * 6, radius * 0.8, radius / 20, color_MinuteHand, style_MinuteHand);
-          if (!hide_SecondHand) { drawHand(ctx, (now.getSeconds()) * 6, radius * 0.8, 0, color_SecondHand, style_SecondHand) };
-        }
-        catch (err) {
-          
+          if (!hide_SecondHand) {
+            drawHand(ctx, (now.getSeconds()) * 6, radius * 0.8, 0, color_SecondHand, style_SecondHand)
+          };
+        } catch (err) {
+
           ctx.font = '20px Sans-Serif';
           ctx.textAlign = "left";
           ctx.fillStyle = 'red';
-          
+
           var message = err.message;
           var words = message.split(' ');
           var line = '';
           var maxWidth = canvas.width - 20;
           var lineHeight = 24;
-          
+
           var x = maxWidth / 2;
           var y = -60;
 
@@ -95,8 +134,7 @@ class AnalogClock extends HTMLElement {
               ctx.fillText(line, -x, y);
               line = words[n] + ' ';
               y += lineHeight;
-            }
-            else {
+            } else {
               line = testLine;
             }
           }
@@ -152,7 +190,7 @@ class AnalogClock extends HTMLElement {
       }
 
       function drawHand(ctx, ang, length, width, color, style) {
-        
+
         // Omvandla ang till radianer
         var angrad = (ang - 90) * Math.PI / 180;
         width = width > 0 ? width : 1;
@@ -160,88 +198,88 @@ class AnalogClock extends HTMLElement {
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
         switch (style) {
-          default:
-            var Coords = getCoords(length, 0, angrad)
+        default:
+          var Coords = getCoords(length, 0, angrad)
             ctx.moveTo(Coords.x, Coords.y);
-            Coords = getCoords(0, -width, angrad)
+          Coords = getCoords(0, -width, angrad)
             ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(-width * 1.5, 0, angrad);
+          Coords = getCoords(-width * 1.5, 0, angrad);
+          ctx.lineTo(Coords.x, Coords.y);
+          Coords = getCoords(0, width, angrad);
+          ctx.lineTo(Coords.x, Coords.y);
+          ctx.closePath();
+          ctx.fill();
+          break;
+        case 2:
+          var Coords = getCoords(1, 0, angrad)
+            ctx.moveTo(Coords.x, Coords.y);
+          Coords = getCoords(length * 0.8, width, angrad)
             ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(0, width, angrad);
+          Coords = getCoords(length, 0, angrad)
             ctx.lineTo(Coords.x, Coords.y);
+          Coords = getCoords(length * 0.8, -width, angrad)
+            ctx.lineTo(Coords.x, Coords.y);
+          ctx.closePath();
+          ctx.fill();
+          break;
+        case 3:
+          ctx.lineWidth = 3;
+          var Coords = getCoords(1, 0, angrad)
+            ctx.moveTo(Coords.x, Coords.y);
+          Coords = getCoords(length, 0, angrad)
+            ctx.lineTo(Coords.x, Coords.y);
+          ctx.closePath();
+          ctx.fill();
+          break;
+        case 4:
+          var Coords = getCoords(1, 0, angrad)
+            ctx.moveTo(Coords.x, Coords.y);
+          Coords = getCoords(length, 0, angrad)
+            ctx.lineTo(Coords.x, Coords.y);
+          Coords = getCoords(length, 0, angrad)
             ctx.closePath();
-            ctx.fill();
-            break;
-          case 2:
-            var Coords = getCoords(1, 0, angrad)
+          ctx.moveTo(Coords.x, Coords.y);
+          ctx.arc(Coords.x, Coords.y, length / 10, 0, 2 * Math.PI);
+          ctx.fill();
+          break;
+        case 5:
+          ctx.lineWidth = 2;
+          var Coords = getCoords(-width * 1.5, 0, angrad)
             ctx.moveTo(Coords.x, Coords.y);
-            Coords = getCoords(length * 0.8, width, angrad)
+          Coords = getCoords(0, width, angrad)
             ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(length, 0, angrad)
+          Coords = getCoords(width * 2, width, angrad)
             ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(length * 0.8, -width, angrad)
+          Coords = getCoords(width * 2, -width, angrad)
             ctx.lineTo(Coords.x, Coords.y);
-            ctx.closePath();
-            ctx.fill();
-            break;
-          case 3:
-            ctx.lineWidth = 3;
-            var Coords = getCoords(1, 0, angrad)
+          Coords = getCoords(0, -width, angrad)
+            ctx.lineTo(Coords.x, Coords.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.beginPath();
+          Coords = getCoords(width * 2, width * 0.8, angrad)
             ctx.moveTo(Coords.x, Coords.y);
-            Coords = getCoords(length, 0, angrad)
+          Coords = getCoords(length, 0, angrad)
             ctx.lineTo(Coords.x, Coords.y);
-            ctx.closePath();
-            ctx.fill();
-            break;
-          case 4:
-            var Coords = getCoords(1, 0, angrad)
-            ctx.moveTo(Coords.x, Coords.y);
-            Coords = getCoords(length, 0, angrad)
+          Coords = getCoords(width * 2, -width * 0.8, angrad)
             ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(length, 0, angrad)
-            ctx.closePath();
-            ctx.moveTo(Coords.x, Coords.y);
-            ctx.arc(Coords.x, Coords.y, length / 10, 0, 2 * Math.PI);
-            ctx.fill();
-            break;
-          case 5:
-            ctx.lineWidth = 2;
-            var Coords = getCoords(-width * 1.5, 0, angrad)
-            ctx.moveTo(Coords.x, Coords.y);
-            Coords = getCoords(0, width, angrad)
-            ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(width * 2, width, angrad)
-            ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(width * 2, -width, angrad)
-            ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(0, -width, angrad)
-            ctx.lineTo(Coords.x, Coords.y);
-            ctx.closePath();
-            ctx.fill();
-            ctx.beginPath();
-            Coords = getCoords(width * 2, width * 0.8, angrad)
-            ctx.moveTo(Coords.x, Coords.y);
-            Coords = getCoords(length, 0, angrad)
-            ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(width * 2, -width * 0.8, angrad)
-            ctx.lineTo(Coords.x, Coords.y);
-            break;
-          case 6:
-            var Coords = getCoords(length, 0, angrad);
-            ctx.moveTo(Coords.x, Coords.y);
-            Coords = getCoords(length * 0.8, width, angrad);
-            ctx.lineTo(Coords.x, Coords.y);
-            Coords = getCoords(length * 0.8, -width, angrad);
-            ctx.lineTo(Coords.x, Coords.y);
-            ctx.closePath();
-            ctx.fill();
-            break;
+          break;
+        case 6:
+          var Coords = getCoords(length, 0, angrad);
+          ctx.moveTo(Coords.x, Coords.y);
+          Coords = getCoords(length * 0.8, width, angrad);
+          ctx.lineTo(Coords.x, Coords.y);
+          Coords = getCoords(length * 0.8, -width, angrad);
+          ctx.lineTo(Coords.x, Coords.y);
+          ctx.closePath();
+          ctx.fill();
+          break;
         }
         ctx.stroke();
         ctx.beginPath();
         ctx.arc(0, 0, length / 40, 0, 2 * Math.PI);
         ctx.fillStyle = '#777777'
-        ctx.fill();
+          ctx.fill();
         ctx.stroke();
       }
 
@@ -261,29 +299,34 @@ class AnalogClock extends HTMLElement {
       function drawWeekday(ctx, now, locale, radius, color) {
         ctx.font = Math.round(radius / 7) + 'px Sans-Serif';
         ctx.fillStyle = color
-        if (showtimezone) {
-          if (timezonedisplayname) {
-            ctx.fillText(timezonedisplayname, 0, radius * 0.3);
+          if (showtimezone) {
+            if (timezonedisplayname) {
+              ctx.fillText(timezonedisplayname, 0, radius * 0.3);
+            } else {
+              ctx.fillText(timezone, 0, radius * 0.3);
+            }
           } else {
-            ctx.fillText(timezone, 0, radius * 0.3);
+            var options = {
+              weekday: 'long'
+            };
+            ctx.fillText(now.toLocaleDateString(locale, options), 0, radius * 0.3);
           }
-        } else {
-          var options = { weekday: 'long' };
-          ctx.fillText(now.toLocaleDateString(locale, options), 0, radius * 0.3);
-        }
-        ctx.stroke();
+          ctx.stroke();
       }
 
       function drawWeeknumber(ctx, now, locale, radius, color) {
         ctx.font = Math.round(radius / 7) + 'px Sans-Serif';
         ctx.fillStyle = color
-        var week = weekNumber();
+          var week = weekNumber();
         ctx.fillText(week, radius * -0.5, 0);
         ctx.stroke();
       }
 
       function drawTime(ctx, now, locale, radius, color, timezone) {
-        var options = { hour: '2-digit', minute: '2-digit' };
+        var options = {
+          hour: '2-digit',
+          minute: '2-digit'
+        };
         var timeString = now.toLocaleTimeString(locale, options);
         if (timeFormat) {
           var nowmoment = moment(now);
@@ -302,16 +345,16 @@ class AnalogClock extends HTMLElement {
       function drawDate(ctx, now, locale, radius, color) {
         ctx.font = Math.round(radius / 7) + 'px Sans-Serif';
         ctx.fillStyle = color
-        if (dateFormat) {
-          //"20111010T1020"
-          var datestring = now.toLocaleString('sv-SE');
-          //var datestring = '2021-01-10 10:08';
-          var nowmoment = moment(datestring);
-          ctx.fillText(nowmoment.format(dateFormat), 0, radius * 0.5);
-        } else {
-          ctx.fillText(now.toLocaleDateString(locale), 0, radius * 0.5);
-        }
-        ctx.stroke();
+          if (dateFormat) {
+            //"20111010T1020"
+            var datestring = now.toLocaleString('sv-SE');
+            //var datestring = '2021-01-10 10:08';
+            var nowmoment = moment(datestring);
+            ctx.fillText(nowmoment.format(dateFormat), 0, radius * 0.5);
+          } else {
+            ctx.fillText(now.toLocaleDateString(locale), 0, radius * 0.5);
+          }
+          ctx.stroke();
       }
 
       function weekNumber() {
@@ -323,104 +366,146 @@ class AnalogClock extends HTMLElement {
         var week1 = new Date(date.getFullYear(), 0, 4);
         // Adjust to Thursday in week 1 and count number of weeks from date to week1.
         return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
-          - 3 + (week1.getDay() + 6) % 7) / 7);
+             - 3 + (week1.getDay() + 6) % 7) / 7);
       }
 
       function getConfig() {
-        
+
         globalThis.color_Background = getComputedStyle(document.documentElement).getPropertyValue('--primary-background-color');
-        if (config.color_Background) color_Background = config.color_Background;
-        if (config.color_background) color_Background = config.color_background;
+        if (config.color_Background)
+          color_Background = config.color_Background;
+        if (config.color_background)
+          color_Background = config.color_background;
 
         globalThis.color_Ticks = 'Silver';
-        if (config.color_Ticks) color_Ticks = config.color_Ticks;
-        if (config.color_ticks) color_Ticks = config.color_ticks;
+        if (config.color_Ticks)
+          color_Ticks = config.color_Ticks;
+        if (config.color_ticks)
+          color_Ticks = config.color_ticks;
 
         globalThis.hide_MinorTicks = false;
-        if (config.hide_minorticks == true) hide_MinorTicks = config.hide_minorticks;
+        if (config.hide_minorticks == true)
+          hide_MinorTicks = config.hide_minorticks;
 
         globalThis.color_FaceDigits = 'Silver';
-        if (config.color_FaceDigits) color_FaceDigits = config.color_FaceDigits;
-        if (config.color_facedigits) color_FaceDigits = config.color_facedigits;
+        if (config.color_FaceDigits)
+          color_FaceDigits = config.color_FaceDigits;
+        if (config.color_facedigits)
+          color_FaceDigits = config.color_facedigits;
 
         globalThis.locale = hass.language;
-        if (config.locale) locale = config.locale;
+        if (config.locale)
+          locale = config.locale;
 
         globalThis.color_DigitalTime = '#CCCCCC';
-        if (config.color_DigitalTime) color_DigitalTime = config.color_DigitalTime;
-        if (config.color_digitaltime) color_DigitalTime = config.color_digitaltime;
+        if (config.color_DigitalTime)
+          color_DigitalTime = config.color_DigitalTime;
+        if (config.color_digitaltime)
+          color_DigitalTime = config.color_digitaltime;
 
         globalThis.color_HourHand = '#CCCCCC';
-        if (config.color_HourHand) color_HourHand = config.color_HourHand;
-        if (config.color_hourhand) color_HourHand = config.color_hourhand;
+        if (config.color_HourHand)
+          color_HourHand = config.color_HourHand;
+        if (config.color_hourhand)
+          color_HourHand = config.color_hourhand;
 
         globalThis.color_MinuteHand = '#EEEEEE';
-        if (config.color_MinuteHand) color_MinuteHand = config.color_MinuteHand;
-        if (config.color_minutehand) color_MinuteHand = config.color_minutehand;
+        if (config.color_MinuteHand)
+          color_MinuteHand = config.color_MinuteHand;
+        if (config.color_minutehand)
+          color_MinuteHand = config.color_minutehand;
 
         globalThis.color_SecondHand = 'Silver';
-        if (config.color_SecondHand) color_SecondHand = config.color_SecondHand;
-        if (config.color_secondhand) color_SecondHand = config.color_secondhand;
+        if (config.color_SecondHand)
+          color_SecondHand = config.color_SecondHand;
+        if (config.color_secondhand)
+          color_SecondHand = config.color_secondhand;
 
         globalThis.color_Time = 'Silver';
-        if (config.color_Time) color_Time = config.color_Time;
-        if (config.color_time) color_Time = config.color_time;
+        if (config.color_Time)
+          color_Time = config.color_Time;
+        if (config.color_time)
+          color_Time = config.color_time;
 
         globalThis.color_Text = 'Silver';
-        if (config.color_Text) color_Text = config.color_Text;
-        if (config.color_text) color_Text = config.color_text;
+        if (config.color_Text)
+          color_Text = config.color_Text;
+        if (config.color_text)
+          color_Text = config.color_text;
 
         globalThis.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (config.timezone) timezone = config.timezone;
+        if (config.timezone)
+          timezone = config.timezone;
 
         globalThis.timezonedisplayname = "";
-        if (config.timezonedisplayname) timezonedisplayname = config.timezonedisplayname;
+        if (config.timezonedisplayname)
+          timezonedisplayname = config.timezonedisplayname;
 
         globalThis.showtimezone = false;
-        if (config.showtimezone == true) showtimezone = true;
-        if (config.show_timezone == true) showtimezone = true;
+        if (config.showtimezone == true)
+          showtimezone = true;
+        if (config.show_timezone == true)
+          showtimezone = true;
 
         globalThis.hide_WeekNumber = true;
-        if (config.hide_WeekNumber == false) hide_WeekNumber = false;
-        if (config.hide_weeknumber == false) hide_WeekNumber = false;
+        if (config.hide_WeekNumber == false)
+          hide_WeekNumber = false;
+        if (config.hide_weeknumber == false)
+          hide_WeekNumber = false;
 
         globalThis.hide_FaceDigits = false;
-        if (config.hide_FaceDigits == true) hide_FaceDigits = true;
-        if (config.hide_facedigits == true) hide_FaceDigits = true;
+        if (config.hide_FaceDigits == true)
+          hide_FaceDigits = true;
+        if (config.hide_facedigits == true)
+          hide_FaceDigits = true;
 
         globalThis.hide_Date = false;
-        if (config.hide_Date == true) hide_Date = true;
-        if (config.hide_date == true) hide_Date = true;
+        if (config.hide_Date == true)
+          hide_Date = true;
+        if (config.hide_date == true)
+          hide_Date = true;
 
         globalThis.hide_WeekDay = false;
-        if (config.hide_WeekDay == true) hide_WeekDay = true;
-        if (config.hide_weekday == true) hide_WeekDay = true;
+        if (config.hide_WeekDay == true)
+          hide_WeekDay = true;
+        if (config.hide_weekday == true)
+          hide_WeekDay = true;
 
         globalThis.hide_DigitalTime = false;
-        if (config.hide_DigitalTime == true) hide_DigitalTime = true;
-        if (config.hide_digitaltime == true) hide_DigitalTime = true;
+        if (config.hide_DigitalTime == true)
+          hide_DigitalTime = true;
+        if (config.hide_digitaltime == true)
+          hide_DigitalTime = true;
 
         globalThis.hide_SecondHand = false;
-        if (config.hide_SecondHand == true) hide_SecondHand = true;
-        if (config.hide_secondhand == true) hide_SecondHand = true;
+        if (config.hide_SecondHand == true)
+          hide_SecondHand = true;
+        if (config.hide_secondhand == true)
+          hide_SecondHand = true;
 
         globalThis.style_HourHand = 1;
-        if (config.style_hourhand) style_HourHand = config.style_hourhand;
+        if (config.style_hourhand)
+          style_HourHand = config.style_hourhand;
 
         globalThis.style_MinuteHand = 1;
-        if (config.style_minutehand) style_MinuteHand = config.style_minutehand;
+        if (config.style_minutehand)
+          style_MinuteHand = config.style_minutehand;
 
         globalThis.style_SecondHand = 3;
-        if (config.style_secondhand) style_SecondHand = config.style_secondhand;
+        if (config.style_secondhand)
+          style_SecondHand = config.style_secondhand;
 
         globalThis.dateFormat = "";
-        if (config.dateformat) dateFormat = config.dateformat;
+        if (config.dateformat)
+          dateFormat = config.dateformat;
 
         globalThis.timeFormat = "";
-        if (config.timeformat) timeFormat = config.timeformat;
+        if (config.timeformat)
+          timeFormat = config.timeformat;
 
         globalThis.demo = false;
-        if (config.demo == true) demo = true;
+        if (config.demo == true)
+          demo = true;
 
         var themes = config.themes;
         if (themes) {
@@ -438,81 +523,144 @@ class AnalogClock extends HTMLElement {
               }
               var now = Date.now();
               if ((endTime > startTime && (now > startTime && now < endTime)) || (endTime < startTime && (now > startTime || now < endTime))) {
-                if (themes[i].color_background) { color_Background = themes[i].color_background };
-                if (themes[i].color_ticks) { color_Ticks = themes[i].color_ticks };
-                if (themes[i].hide_minorticks == true) { hide_MinorTicks = true };
-                if (themes[i].hide_minorticks == false) { hide_MinorTicks = false };
-                if (themes[i].color_facedigits) { color_FaceDigits = themes[i].color_facedigits };
-                if (themes[i].locale) { locale = themes[i].locale };
-                if (themes[i].color_digitaltime) { color_DigitalTime = themes[i].color_digitaltime };
-                if (themes[i].color_hourhand) { color_HourHand = themes[i].color_hourhand };
-                if (themes[i].color_minutehand) { color_MinuteHand = themes[i].color_minutehand };
-                if (themes[i].color_secondhand) { color_SecondHand = themes[i].color_secondhand };
-                if (themes[i].color_time) { color_Time = themes[i].color_time };
-                if (themes[i].color_text) { color_Text = themes[i].color_text };
-                if (themes[i].timezonedisplayname) { timezonedisplayname = themes[i].timezonedisplayname };
-                if (themes[i].show_timezone == true) { showtimezone = true };
-                if (themes[i].show_timezone == false) { showtimezone = false };
-                if (themes[i].hide_weeknumber == true) { hide_WeekNumber = true };
-                if (themes[i].hide_weeknumber == false) { hide_WeekNumber = false };
-                if (themes[i].hide_facedigits == true) { hide_FaceDigits = true };
-                if (themes[i].hide_facedigits == false) { hide_FaceDigits = false };
-                if (themes[i].hide_date == true) { hide_Date = true };
-                if (themes[i].hide_date == false) { hide_Date = false };
-                if (themes[i].hide_weekday == true) { hide_WeekDay = true };
-                if (themes[i].hide_weekday == false) { hide_WeekDay = false };
-                if (themes[i].hide_digitaltime == true) { hide_DigitalTime = true };
-                if (themes[i].hide_digitaltime == false) { hide_DigitalTime = false };
-                if (themes[i].hide_secondhand == true) { hide_SecondHand = true };
-                if (themes[i].hide_secondhand == false) { hide_SecondHand = false };
-                if (themes[i].style_hourhand) { style_HourHand = themes[i].style_hourhand };
-                if (themes[i].style_minutehand) { style_MinuteHand = themes[i].style_minutehand };
-                if (themes[i].style_secondhand) { style_SecondHand = themes[i].style_secondhand };
-                if (themes[i].dateformat) { dateFormat = themes[i].dateformat };
-                if (themes[i].timeformat) { timeFormat = themes[i].timeformat };
+                if (themes[i].color_background) {
+                  color_Background = themes[i].color_background
+                };
+                if (themes[i].color_ticks) {
+                  color_Ticks = themes[i].color_ticks
+                };
+                if (themes[i].hide_minorticks == true) {
+                  hide_MinorTicks = true
+                };
+                if (themes[i].hide_minorticks == false) {
+                  hide_MinorTicks = false
+                };
+                if (themes[i].color_facedigits) {
+                  color_FaceDigits = themes[i].color_facedigits
+                };
+                if (themes[i].locale) {
+                  locale = themes[i].locale
+                };
+                if (themes[i].color_digitaltime) {
+                  color_DigitalTime = themes[i].color_digitaltime
+                };
+                if (themes[i].color_hourhand) {
+                  color_HourHand = themes[i].color_hourhand
+                };
+                if (themes[i].color_minutehand) {
+                  color_MinuteHand = themes[i].color_minutehand
+                };
+                if (themes[i].color_secondhand) {
+                  color_SecondHand = themes[i].color_secondhand
+                };
+                if (themes[i].color_time) {
+                  color_Time = themes[i].color_time
+                };
+                if (themes[i].color_text) {
+                  color_Text = themes[i].color_text
+                };
+                if (themes[i].timezonedisplayname) {
+                  timezonedisplayname = themes[i].timezonedisplayname
+                };
+                if (themes[i].show_timezone == true) {
+                  showtimezone = true
+                };
+                if (themes[i].show_timezone == false) {
+                  showtimezone = false
+                };
+                if (themes[i].hide_weeknumber == true) {
+                  hide_WeekNumber = true
+                };
+                if (themes[i].hide_weeknumber == false) {
+                  hide_WeekNumber = false
+                };
+                if (themes[i].hide_facedigits == true) {
+                  hide_FaceDigits = true
+                };
+                if (themes[i].hide_facedigits == false) {
+                  hide_FaceDigits = false
+                };
+                if (themes[i].hide_date == true) {
+                  hide_Date = true
+                };
+                if (themes[i].hide_date == false) {
+                  hide_Date = false
+                };
+                if (themes[i].hide_weekday == true) {
+                  hide_WeekDay = true
+                };
+                if (themes[i].hide_weekday == false) {
+                  hide_WeekDay = false
+                };
+                if (themes[i].hide_digitaltime == true) {
+                  hide_DigitalTime = true
+                };
+                if (themes[i].hide_digitaltime == false) {
+                  hide_DigitalTime = false
+                };
+                if (themes[i].hide_secondhand == true) {
+                  hide_SecondHand = true
+                };
+                if (themes[i].hide_secondhand == false) {
+                  hide_SecondHand = false
+                };
+                if (themes[i].style_hourhand) {
+                  style_HourHand = themes[i].style_hourhand
+                };
+                if (themes[i].style_minutehand) {
+                  style_MinuteHand = themes[i].style_minutehand
+                };
+                if (themes[i].style_secondhand) {
+                  style_SecondHand = themes[i].style_secondhand
+                };
+                if (themes[i].dateformat) {
+                  dateFormat = themes[i].dateformat
+                };
+                if (themes[i].timeformat) {
+                  timeFormat = themes[i].timeformat
+                };
               }
             }
-          } catch (err) {
-          }
+          } catch (err) {}
         }
       }
     }
   }
-  
+
   getDefaultLayout() {
-    
+
     // Gets default values for the cards features
     //
     // Note:
-    //  a) As the original based the size of a card on the clock diameter, 
+    //  a) As the original based the size of a card on the clock diameter,
     //     we consider diamter as part of a card "layout"
-    
+
     var defaultLayout = [];
-    
+
     defaultLayout.diameter = 150;
 
     return defaultLayout;
   }
-  
-  updateLayout(oldLayout,newLayout) {
-    
+
+  updateLayout(oldLayout, newLayout) {
+
     // Updates the layout, if changed
     //
     // Note:
     //  a) This does nothing for compatibility as the only "layout" property
     //     is the clock diameter which is not changeable in previous versions.
-    
+
     var layout = oldLayout;
-    
+
     return layout;
   }
-  
+
   getDefaultConfig() {
-    
+
     // Gets default values for the clocks features
-    
+
     var defaultConfig = [];
-        
+
     defaultConfig.color_time = 'Silver';
     defaultConfig.color_text = 'Silver';
     defaultConfig.color_ticks = 'Silver';
@@ -522,15 +670,15 @@ class AnalogClock extends HTMLElement {
     defaultConfig.color_background = getComputedStyle(document.documentElement).getPropertyValue('--primary-background-color');
     defaultConfig.color_facedigits = 'Silver';
     defaultConfig.color_digitaltime = '#CCCCCC';
-    
+
     defaultConfig.locale = hass.language;
-    defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;;
+    defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; ;
     defaultConfig.dateformat = "";
     defaultConfig.timeformat = "";
     defaultConfig.timezonedisplayname = "";
-    
+
     defaultConfig.show_timezone = false;
-    
+
     defaultConfig.hide_minorticks = false;
     defaultConfig.hide_weeknumber = true;
     defaultConfig.hide_facedigits = false;
@@ -538,66 +686,114 @@ class AnalogClock extends HTMLElement {
     defaultConfig.hide_weekday = false;
     defaultConfig.hide_digitaltime = false;
     defaultConfig.hide_secondhand = false;
-    
+
     defaultConfig.style_hourhand = false;
     defaultConfig.style_minutehand = false;
     defaultConfig.style_secondhand = false;
-    
+
     //defaultConfig.demo = false;
-        
+
     return defaultConfig;
 
   }
-  
-updateConfig(oldConfig,newConfig) {
-    
+
+  updateConfig(oldConfig, newConfig) {
+
     // Updates the config, with values from the newConfig, if they exist
     //
     // Note:
     //  a) No validity checks are performed.
     //  b) Booleans are made using double-NOT-ing
     //  c) Non-booleans are copied straight over as is
-  
+
     var config = oldConfig;
-    
-    if (newConfig.color_time) { config.color_time = newConfig.color_time };
-    if (newConfig.color_text) { config.color_text = newConfig.color_text };
-    if (newConfig.color_ticks) { config.color_ticks = newConfig.color_ticks };
-    if (newConfig.color_hourhand) { config.color_hourhand = newConfig.color_hourhand };
-    if (newConfig.color_secondhand) { config.color_secondhand = newConfig.color_secondhand };
-    if (newConfig.color_minutehand) { config.color_minutehand = newConfig.color_minutehand };
-    if (newConfig.color_background) { config.color_background = newConfig.color_background };
-    if (newConfig.color_facedigits) { config.color_facedigits = newConfig.color_facedigits };
-    if (newConfig.color_digitaltime) { config.color_digitaltime = newConfig.color_digitaltime };
-    
-    if (newConfig.locale) { config.locale = newConfig.locale };
-    if (newConfig.dateformat) { config.dateFormat = newConfig.dateformat };
-    if (newConfig.timeformat) { config.timeFormat = newConfig.timeformat };
-    if (newConfig.timezonedisplayname) { config.timezonedisplayname = newConfig.timezonedisplayname };
-    
+
+    if (newConfig.color_time) {
+      config.color_time = newConfig.color_time
+    };
+    if (newConfig.color_text) {
+      config.color_text = newConfig.color_text
+    };
+    if (newConfig.color_ticks) {
+      config.color_ticks = newConfig.color_ticks
+    };
+    if (newConfig.color_hourhand) {
+      config.color_hourhand = newConfig.color_hourhand
+    };
+    if (newConfig.color_secondhand) {
+      config.color_secondhand = newConfig.color_secondhand
+    };
+    if (newConfig.color_minutehand) {
+      config.color_minutehand = newConfig.color_minutehand
+    };
+    if (newConfig.color_background) {
+      config.color_background = newConfig.color_background
+    };
+    if (newConfig.color_facedigits) {
+      config.color_facedigits = newConfig.color_facedigits
+    };
+    if (newConfig.color_digitaltime) {
+      config.color_digitaltime = newConfig.color_digitaltime
+    };
+
+    if (newConfig.locale) {
+      config.locale = newConfig.locale
+    };
+    if (newConfig.dateformat) {
+      config.dateFormat = newConfig.dateformat
+    };
+    if (newConfig.timeformat) {
+      config.timeFormat = newConfig.timeformat
+    };
+    if (newConfig.timezonedisplayname) {
+      config.timezonedisplayname = newConfig.timezonedisplayname
+    };
+
     // Use !! to coerce values to boolean
-    if (newConfig.show_timezone) { config.show_timezone = !!(newConfig.show_timezone) };
-      
+    if (newConfig.show_timezone) {
+      config.show_timezone = !!(newConfig.show_timezone)
+    };
+
     // Use !! to coerce values to boolean
-    if (newConfig.hide_date) { config.hide_date = !!(newConfig.hide_date) };
-    if (newConfig.hide_weekday) { config.hide_weekday = !!(newConfig.hide_weekday) };
-    if (newConfig.hide_minorticks) { config.hide_minorticks = !!(newConfig.hide_minorticks) };
-    if (newConfig.hide_weeknumber) { config.hide_weeknumber = !!(newConfig.hide_weeknumber) };
-    if (newConfig.hide_facedigits) { config.hide_facedigits = !!(newConfig.hide_facedigits) };
-    if (newConfig.hide_secondhand) { config.hide_secondhand = !!(newConfig.hide_secondhand) };
-    if (newConfig.hide_digitaltime) { config.hide_digitaltime = !!(newConfig.hide_digitaltime) };
-    
+    if (newConfig.hide_date) {
+      config.hide_date = !!(newConfig.hide_date)
+    };
+    if (newConfig.hide_weekday) {
+      config.hide_weekday = !!(newConfig.hide_weekday)
+    };
+    if (newConfig.hide_minorticks) {
+      config.hide_minorticks = !!(newConfig.hide_minorticks)
+    };
+    if (newConfig.hide_weeknumber) {
+      config.hide_weeknumber = !!(newConfig.hide_weeknumber)
+    };
+    if (newConfig.hide_facedigits) {
+      config.hide_facedigits = !!(newConfig.hide_facedigits)
+    };
+    if (newConfig.hide_secondhand) {
+      config.hide_secondhand = !!(newConfig.hide_secondhand)
+    };
+    if (newConfig.hide_digitaltime) {
+      config.hide_digitaltime = !!(newConfig.hide_digitaltime)
+    };
+
     //
-    
-    if (newConfig.style_hourhand) { config.style_HourHand = newConfig.style_hourhand };
-    if (newConfig.style_minutehand) { config.style_MinuteHand = newConfig.style_minutehand };
-    if (newConfig.style_secondhand) { config.style_SecondHand = newConfig.style_secondhand };
-    
+
+    if (newConfig.style_hourhand) {
+      config.style_HourHand = newConfig.style_hourhand
+    };
+    if (newConfig.style_minutehand) {
+      config.style_MinuteHand = newConfig.style_minutehand
+    };
+    if (newConfig.style_secondhand) {
+      config.style_SecondHand = newConfig.style_secondhand
+    };
+
     return config;
   }
 
-  updateThemes(oldThemes,newThemes) {
-    
+  updateThemes(oldThemes, newThemes) {
+
     // Updates the themes, with values from the newThemes, if they exist
     //
     // (This is current redundant as we don't parse themes recursively
@@ -606,25 +802,25 @@ updateConfig(oldConfig,newConfig) {
     // Note:
     //  a) Use simple concatination as theme selection always picks
     //     the last applicable theme anyway.
-    
+
     var themes = [];
-    
+
     themes = oldThemes.concat(newThemes);
-    
+
     return themes;
-    
+
   }
-  
+
   getDefaultThemes() {
-    
+
     // Gets default values for the theme list
-    
+
     var defaultThemes = [];
     return defaultThemes;
 
   }
-  
-  getActiveTheme(dateTime,themes) {
+
+  getActiveTheme(dateTime, themes) {
     //
     // Returns an apprpriate set of configuration properties listed in the themes section, if it exists
     //
@@ -633,52 +829,50 @@ updateConfig(oldConfig,newConfig) {
     //     for properties to be added without a time element which allows clocks to have multiple
     //     "looks" with a definitive order in which they are applied.
     //       timed theme >> un-timed theme >> clock >> defaults
-    //  b) 
-    
+    //  b)
+
     var newTheme = [];
-    
+
     if (themes) {
       try {
         for (var i = 0; i < themes.length; i++) {
           if (themes[i].time) {
-            
+
             var startTime = new Date();
             var endTime = new Date();
-            
+
             startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
             startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
             startTime.setSeconds(0);
-            
+
             endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
             endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
             endTime.setSeconds(0);
           }
 
-          if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) { 
+          if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
             newTheme = themes[i];
           }
         } else {
           newTheme = themes[i];
         }
-      } catch (err) {
-    }      
-    return newTheme;
-  }
-  
-  setConfig(config) {
-    
-    // Split up the configuration items into relevant objects
-    
-    this._layout = updateLayout(getDefaultLayout(),config);
-    this._config = updateConfig(getDefaultConfig(),config);
-    this._themes = updateThemes(getDefaultThemes(),config);
-    
+      } catch (err) {}
+      return newTheme;
+    }
+
+    setConfig(config) {
+
+      // Split up the configuration items into relevant objects
+
+      this._layout = updateLayout(getDefaultLayout(), config);
+      this._config = updateConfig(getDefaultConfig(), config);
+      this._themes = updateThemes(getDefaultThemes(), config);
+
+    }
+
+    getCardSize() {
+      return 3;
+    }
   }
 
-
-  getCardSize() {
-    return 3;
-  }
-}
-
-customElements.define('analog-clock-v2', AnalogClock);
+  customElements.define('analog-clock-v2', AnalogClock2);
