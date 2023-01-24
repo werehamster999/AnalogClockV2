@@ -5,8 +5,10 @@ class AnalogClock2 extends HTMLElement {
     if (!this.content) {
 
       // Split up configuration items for easier handling
-      getConfig(this.config);
-      
+      this._layout = updateLayout(getDefaultLayout(), config);
+      this._config = updateConfig(getDefaultConfig(), config);
+      this._themes = updateThemes(getDefaultThemes(), config);
+
       // Create the initial ha-card
       this.card = this.appendChild(document.createElement('ha-card'));
 
@@ -475,16 +477,6 @@ class AnalogClock2 extends HTMLElement {
         return defaultThemes;
 
       }
-
-      function getConfig(config) {
-
-        // Split up the configuration items into relevant objects
-
-        this._layout = updateLayout(getDefaultLayout(), config);
-        this._config = updateConfig(getDefaultConfig(), config);
-        this._themes = updateThemes(getDefaultThemes(), config);
-
-     }
 
       function getActiveTheme(dateTime, themes) {
       
