@@ -5,9 +5,9 @@ class AnalogClock2 extends HTMLElement {
     if (!this.content) {
 
       // Split up configuration items for easier handling
-      this._layout = updateLayout(getDefaultLayout(), config);
-      this._config = updateConfig(getDefaultConfig(), config);
-      this._themes = updateThemes(getDefaultThemes(), config);
+      this._layout = updateLayout(getDefaultLayout(), this.config);
+      this._config = updateConfig(getDefaultConfig(), this.config);
+      this._themes = updateThemes(getDefaultThemes(), this.config);
 
       // Create the initial ha-card
       this.card = this.appendChild(document.createElement('ha-card'));
@@ -25,26 +25,28 @@ class AnalogClock2 extends HTMLElement {
       this.canvas.width = this._layout.diameter;
       this.canvas.height = this._layout.diameter;
 
-      // Adjust radius to fit inside canvas
-      var radius = (this.canvas.width < this.canvas.height) ? this.canvas.width / 2.1 : this.canvas.height / 2.1;
+      // draw the clock
+      drawClock(this._layout, this._config, this.themes, this.canvas);
 
-      // Find centre for drawing
-      var ctx = this.canvas.getContext("2d");
-      ctx.textAlign = "center";
-      ctx.textBaseline = 'middle';
-      ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+      if (this._config.hide_SecondHand) {
+        setInterval(drawClock, 10000, this._layout, this._config, this.themes, this.canvas);
+      } else {
+        setInterval(drawClock, 1000, this._layout, this._config, this.themes, this.canvas);
+      }
 
-      //drawClock(ctx);
-
-      //if (this.hide_SecondHand) {
-      //  setInterval(drawClock, 10000, ctx);
-      //} else {
-      //  setInterval(drawClock, 1000, ctx);
-      //}
-
-      function drawClock(ctx) {
+      function drawClock(layout,config,themes,canvas) {
+        
         try {
 
+          // Adjust radius to fit inside canvas
+          var radius = (canvas.width < canvas.height) ? canvas.width / 2.1 : canvas.height / 2.1;
+
+          // Find centre for drawing
+          var ctx = canvas.getContext("2d");
+          ctx.textAlign = "center";
+          ctx.textBaseline = 'middle';
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          
           if (config.timezone) { options = { timeZone: timezone } };
 
           var now = new Date();
