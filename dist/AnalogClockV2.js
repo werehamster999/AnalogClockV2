@@ -848,15 +848,16 @@ class AnalogClock2 extends HTMLElement {
             endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
             endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
             endTime.setSeconds(0);
-          }
-
-          if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
+            
+            if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
+              newTheme = themes[i];
+            }
+          } else {
             newTheme = themes[i];
           }
-        } else {
-          newTheme = themes[i];
         }
       } catch (err) {}
+      
       return newTheme;
     }
 
