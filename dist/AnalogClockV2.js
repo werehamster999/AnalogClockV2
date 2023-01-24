@@ -416,7 +416,7 @@ class AnalogClock2 extends HTMLElement {
     defaultConfig.color_digitaltime = '#CCCCCC';
 
     defaultConfig.locale = hass.language;
-    defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; ;
+    defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     defaultConfig.dateformat = "";
     defaultConfig.timeformat = "";
     defaultConfig.timezonedisplayname = "";
