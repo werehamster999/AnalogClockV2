@@ -4,6 +4,9 @@ class AnalogClock2 extends HTMLElement {
 
     if (!this.content) {
 
+      // Split up configuration items for easier handling
+      getConfig(this.config);
+      
       // Create the initial ha-card
       this.card = this.appendChild(document.createElement('ha-card'));
 
@@ -39,8 +42,6 @@ class AnalogClock2 extends HTMLElement {
 
       function drawClock(ctx) {
         try {
-
-          var config = getConfig();
 
           if (config.timezone) { options = { timeZone: timezone } };
 
@@ -475,7 +476,17 @@ class AnalogClock2 extends HTMLElement {
 
       }
 
-      /* function getActiveTheme(dateTime, themes) {
+      function getConfig(config) {
+
+        // Split up the configuration items into relevant objects
+
+        this._layout = this.updateLayout(this.getDefaultLayout(), config);
+        this._config = this.updateConfig(this.getDefaultConfig(), config);
+        this._themes = this.updateThemes(this.getDefaultThemes(), config);
+
+     }
+
+      function getActiveTheme(dateTime, themes) {
       //
       // Returns an apprpriate set of configuration properties listed in the themes section, if it exists
       //
@@ -489,44 +500,38 @@ class AnalogClock2 extends HTMLElement {
       var newTheme = [];
 
       if (themes) {
-      try {
-      for (var i = 0; i < themes.length; i++) {
-      if (themes[i].time) {
+        try {
+          for (var i = 0; i < themes.length; i++) {
+            if (themes[i].time) {
 
-      var startTime = new Date();
-      var endTime = new Date();
+              var startTime = new Date();
+              var endTime = new Date();
 
-      startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
-      startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
-      startTime.setSeconds(0);
+              startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
+              startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
+              startTime.setSeconds(0);
 
-      endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
-      endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
-      endTime.setSeconds(0);
+              endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
+              endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
+              endTime.setSeconds(0);
 
-      if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
-      newTheme = themes[i];
+              if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
+                newTheme = themes[i];
+              }
+            } else {
+              newTheme = themes[i];
+            }
+          }
+       } catch (err) {}
+
+        return newTheme;
+        
       }
-      } else {
-      newTheme = themes[i];
-      }
-      }
-      } catch (err) {}
-
-      return newTheme;
-      } */
-
     }
   }
 
   setConfig(config) {
-
-    // Split up the configuration items into relevant objects
-
-    this._layout = this.updateLayout(this.getDefaultLayout(), config);
-    this._config = this.updateConfig(this.getDefaultConfig(), config);
-    this._themes = this.updateThemes(this.getDefaultThemes(), config);
-
+    this.config = config;
   }
 
   getCardSize() {
