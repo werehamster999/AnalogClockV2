@@ -487,45 +487,45 @@ class AnalogClock2 extends HTMLElement {
      }
 
       function getActiveTheme(dateTime, themes) {
-      //
-      // Returns an apprpriate set of configuration properties listed in the themes section, if it exists
-      //
-      // Note:
-      //  a) The original version requires a time element to be listed, this version allows
-      //     for properties to be added without a time element which allows clocks to have multiple
-      //     "looks" with a definitive order in which they are applied.
-      //       timed theme >> un-timed theme >> clock >> defaults
-      //  b)
+      
+        // Returns an apprpriate set of configuration properties listed in the themes section, if it exists
+        //
+        // Note:
+        //  a) The original version requires a time element to be listed, this version allows
+        //     for properties to be added without a time element which allows clocks to have multiple
+        //     "looks" with a definitive order in which they are applied.
+        //       timed theme >> un-timed theme >> clock >> defaults
+        //  b)
 
-      var newTheme = [];
+        var newTheme = [];
 
-      if (themes) {
-        try {
-          for (var i = 0; i < themes.length; i++) {
-            if (themes[i].time) {
+        if (themes) {
+          try {
+            for (var i = 0; i < themes.length; i++) {
+              if (themes[i].time) {
 
-              var startTime = new Date();
-              var endTime = new Date();
+                var startTime = new Date();
+                var endTime = new Date();
 
-              startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
-              startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
-              startTime.setSeconds(0);
+                startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
+                startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
+                startTime.setSeconds(0);
 
-              endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
-              endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
-              endTime.setSeconds(0);
+                endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
+                endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
+                endTime.setSeconds(0);
 
-              if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
+                if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
+                  newTheme = themes[i];
+                }
+              } else {
                 newTheme = themes[i];
               }
-            } else {
-              newTheme = themes[i];
             }
-          }
-       } catch (err) {}
+          } catch (err) {}
 
-        return newTheme;
-        
+          return newTheme;
+        }
       }
     }
   }
