@@ -523,9 +523,9 @@ class AnalogClock2 extends HTMLElement {
 
     // Split up the configuration items into relevant objects
 
-    this._layout = updateLayout(getDefaultLayout(), config);
-    this._config = updateConfig(getDefaultConfig(), config);
-    this._themes = updateThemes(getDefaultThemes(), config);
+    this._layout = this.updateLayout(this.getDefaultLayout(), config);
+    this._config = this.updateConfig(this.getDefaultConfig(), config);
+    this._themes = this.updateThemes(this.getDefaultThemes(), config);
 
   }
 
