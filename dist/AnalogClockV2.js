@@ -368,257 +368,258 @@ class AnalogClock2 extends HTMLElement {
         return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
              - 3 + (week1.getDay() + 6) % 7) / 7);
       }
-    }
-  }
 
-  getDefaultLayout() {
+      function getDefaultLayout() {
 
-    // Gets default values for the cards features
-    //
-    // Note:
-    //  a) As the original based the size of a card on the clock diameter,
-    //     we consider diamter as part of a card "layout"
+        // Gets default values for the cards features
+        //
+        // Note:
+        //  a) As the original based the size of a card on the clock diameter,
+        //     we consider diamter as part of a card "layout"
 
-    var defaultLayout = [];
+        var defaultLayout = [];
 
-    defaultLayout.diameter = 150;
+        defaultLayout.diameter = 150;
 
-    return defaultLayout;
-  }
+        return defaultLayout;
+      }
 
-  updateLayout(oldLayout, newLayout) {
+      updateLayout(oldLayout, newLayout) {
 
-    // Updates the layout, if changed
-    //
-    // Note:
-    //  a) This does nothing for compatibility as the only "layout" property
-    //     is the clock diameter which is not changeable in previous versions.
+        // Updates the layout, if changed
+        //
+        // Note:
+        //  a) This does nothing for compatibility as the only "layout" property
+        //     is the clock diameter which is not changeable in previous versions.
 
-    var layout = oldLayout;
+        var layout = oldLayout;
 
-    return layout;
-  }
+        return layout;
+      }
 
-  getDefaultConfig() {
+      getDefaultConfig() {
 
-    // Gets default values for the clocks features
+        // Gets default values for the clocks features
 
-    var defaultConfig = [];
+        var defaultConfig = [];
 
-    defaultConfig.color_time = 'Silver';
-    defaultConfig.color_text = 'Silver';
-    defaultConfig.color_ticks = 'Silver';
-    defaultConfig.color_hourhand = '#CCCCCC';
-    defaultConfig.color_secondhand = 'Silver';
-    defaultConfig.color_minutehand = '#EEEEEE';
-    defaultConfig.color_background = getComputedStyle(document.documentElement).getPropertyValue('--primary-background-color');
-    defaultConfig.color_facedigits = 'Silver';
-    defaultConfig.color_digitaltime = '#CCCCCC';
+        defaultConfig.color_time = 'Silver';
+        defaultConfig.color_text = 'Silver';
+        defaultConfig.color_ticks = 'Silver';
+        defaultConfig.color_hourhand = '#CCCCCC';
+        defaultConfig.color_secondhand = 'Silver';
+        defaultConfig.color_minutehand = '#EEEEEE';
+        defaultConfig.color_background = getComputedStyle(document.documentElement).getPropertyValue('--primary-background-color');
+        defaultConfig.color_facedigits = 'Silver';
+        defaultConfig.color_digitaltime = '#CCCCCC';
 
-    defaultConfig.locale = hass.language;
-    defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    defaultConfig.dateformat = "";
-    defaultConfig.timeformat = "";
-    defaultConfig.timezonedisplayname = "";
+        defaultConfig.locale = hass.language;
+        defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        defaultConfig.dateformat = "";
+        defaultConfig.timeformat = "";
+        defaultConfig.timezonedisplayname = "";
 
-    defaultConfig.show_timezone = false;
+        defaultConfig.show_timezone = false;
 
-    defaultConfig.hide_minorticks = false;
-    defaultConfig.hide_weeknumber = true;
-    defaultConfig.hide_facedigits = false;
-    defaultConfig.hide_date = false;
-    defaultConfig.hide_weekday = false;
-    defaultConfig.hide_digitaltime = false;
-    defaultConfig.hide_secondhand = false;
+        defaultConfig.hide_minorticks = false;
+        defaultConfig.hide_weeknumber = true;
+        defaultConfig.hide_facedigits = false;
+        defaultConfig.hide_date = false;
+        defaultConfig.hide_weekday = false;
+        defaultConfig.hide_digitaltime = false;
+        defaultConfig.hide_secondhand = false;
 
-    defaultConfig.style_hourhand = false;
-    defaultConfig.style_minutehand = false;
-    defaultConfig.style_secondhand = false;
+        defaultConfig.style_hourhand = false;
+        defaultConfig.style_minutehand = false;
+        defaultConfig.style_secondhand = false;
 
-    //defaultConfig.demo = false;
+        //defaultConfig.demo = false;
 
-    return defaultConfig;
+        return defaultConfig;
 
-  }
+      }
 
-  updateConfig(oldConfig, newConfig) {
+      updateConfig(oldConfig, newConfig) {
 
-    // Updates the config, with values from the newConfig, if they exist
-    //
-    // Note:
-    //  a) No validity checks are performed.
-    //  b) Booleans are made using double-NOT-ing
-    //  c) Non-booleans are copied straight over as is
+        // Updates the config, with values from the newConfig, if they exist
+        //
+        // Note:
+        //  a) No validity checks are performed.
+        //  b) Booleans are made using double-NOT-ing
+        //  c) Non-booleans are copied straight over as is
 
-    var config = oldConfig;
+        var config = oldConfig;
 
-    // update colors
-    if (newConfig.color_time) {
-      config.color_time = newConfig.color_time
-    };
-    if (newConfig.color_text) {
-      config.color_text = newConfig.color_text
-    };
-    if (newConfig.color_ticks) {
-      config.color_ticks = newConfig.color_ticks
-    };
-    if (newConfig.color_hourhand) {
-      config.color_hourhand = newConfig.color_hourhand
-    };
-    if (newConfig.color_secondhand) {
-      config.color_secondhand = newConfig.color_secondhand
-    };
-    if (newConfig.color_minutehand) {
-      config.color_minutehand = newConfig.color_minutehand
-    };
-    if (newConfig.color_background) {
-      config.color_background = newConfig.color_background
-    };
-    if (newConfig.color_facedigits) {
-      config.color_facedigits = newConfig.color_facedigits
-    };
-    if (newConfig.color_digitaltime) {
-      config.color_digitaltime = newConfig.color_digitaltime
-    };
+        // update colors
+        if (newConfig.color_time) {
+          config.color_time = newConfig.color_time
+        };
+        if (newConfig.color_text) {
+          config.color_text = newConfig.color_text
+        };
+        if (newConfig.color_ticks) {
+          config.color_ticks = newConfig.color_ticks
+        };
+        if (newConfig.color_hourhand) {
+          config.color_hourhand = newConfig.color_hourhand
+        };
+        if (newConfig.color_secondhand) {
+          config.color_secondhand = newConfig.color_secondhand
+        };
+        if (newConfig.color_minutehand) {
+          config.color_minutehand = newConfig.color_minutehand
+        };
+        if (newConfig.color_background) {
+          config.color_background = newConfig.color_background
+        };
+        if (newConfig.color_facedigits) {
+          config.color_facedigits = newConfig.color_facedigits
+        };
+        if (newConfig.color_digitaltime) {
+          config.color_digitaltime = newConfig.color_digitaltime
+        };
 
-    if (newConfig.locale) {
-      config.locale = newConfig.locale
-    };
-    if (newConfig.dateformat) {
-      config.dateFormat = newConfig.dateformat
-    };
-    if (newConfig.timeformat) {
-      config.timeFormat = newConfig.timeformat
-    };
-    if (newConfig.timezonedisplayname) {
-      config.timezonedisplayname = newConfig.timezonedisplayname
-    };
+        if (newConfig.locale) {
+          config.locale = newConfig.locale
+        };
+        if (newConfig.dateformat) {
+          config.dateFormat = newConfig.dateformat
+        };
+        if (newConfig.timeformat) {
+          config.timeFormat = newConfig.timeformat
+        };
+        if (newConfig.timezonedisplayname) {
+          config.timezonedisplayname = newConfig.timezonedisplayname
+        };
 
-    // Use !! to coerce values to boolean
-    if (newConfig.show_timezone) {
-      config.show_timezone = !!(newConfig.show_timezone)
-    };
+        // Use !! to coerce values to boolean
+        if (newConfig.show_timezone) {
+          config.show_timezone = !!(newConfig.show_timezone)
+        };
 
-    // Use !! to coerce values to boolean
-    if (newConfig.hide_date) {
-      config.hide_date = !!(newConfig.hide_date)
-    };
-    if (newConfig.hide_weekday) {
-      config.hide_weekday = !!(newConfig.hide_weekday)
-    };
-    if (newConfig.hide_minorticks) {
-      config.hide_minorticks = !!(newConfig.hide_minorticks)
-    };
-    if (newConfig.hide_weeknumber) {
-      config.hide_weeknumber = !!(newConfig.hide_weeknumber)
-    };
-    if (newConfig.hide_facedigits) {
-      config.hide_facedigits = !!(newConfig.hide_facedigits)
-    };
-    if (newConfig.hide_secondhand) {
-      config.hide_secondhand = !!(newConfig.hide_secondhand)
-    };
-    if (newConfig.hide_digitaltime) {
-      config.hide_digitaltime = !!(newConfig.hide_digitaltime)
-    };
+        // Use !! to coerce values to boolean
+        if (newConfig.hide_date) {
+          config.hide_date = !!(newConfig.hide_date)
+        };
+        if (newConfig.hide_weekday) {
+          config.hide_weekday = !!(newConfig.hide_weekday)
+        };
+        if (newConfig.hide_minorticks) {
+          config.hide_minorticks = !!(newConfig.hide_minorticks)
+        };
+        if (newConfig.hide_weeknumber) {
+          config.hide_weeknumber = !!(newConfig.hide_weeknumber)
+        };
+        if (newConfig.hide_facedigits) {
+          config.hide_facedigits = !!(newConfig.hide_facedigits)
+        };
+        if (newConfig.hide_secondhand) {
+          config.hide_secondhand = !!(newConfig.hide_secondhand)
+        };
+        if (newConfig.hide_digitaltime) {
+          config.hide_digitaltime = !!(newConfig.hide_digitaltime)
+        };
 
-    // Update styles
+        // Update styles
 
-    if (newConfig.style_hourhand) {
-      config.style_HourHand = newConfig.style_hourhand
-    };
-    if (newConfig.style_minutehand) {
-      config.style_MinuteHand = newConfig.style_minutehand
-    };
-    if (newConfig.style_secondhand) {
-      config.style_SecondHand = newConfig.style_secondhand
-    };
+        if (newConfig.style_hourhand) {
+          config.style_HourHand = newConfig.style_hourhand
+        };
+        if (newConfig.style_minutehand) {
+          config.style_MinuteHand = newConfig.style_minutehand
+        };
+        if (newConfig.style_secondhand) {
+          config.style_SecondHand = newConfig.style_secondhand
+        };
 
-    return config;
-  }
+        return config;
+      }
 
-  updateThemes(oldThemes, newThemes) {
+      updateThemes(oldThemes, newThemes) {
 
-    // Updates the themes, with values from the newThemes, if they exist
-    //
-    // (This is current redundant as we don't parse themes recursively
-    //  nor define any as by default.
-    //
-    // Note:
-    //  a) Use simple concatination as theme selection always picks
-    //     the last applicable theme anyway.
+        // Updates the themes, with values from the newThemes, if they exist
+        //
+        // (This is current redundant as we don't parse themes recursively
+        //  nor define any as by default.
+        //
+        // Note:
+        //  a) Use simple concatination as theme selection always picks
+        //     the last applicable theme anyway.
 
-    var themes = [];
+        var themes = [];
 
-    themes = oldThemes.concat(newThemes);
+        themes = oldThemes.concat(newThemes);
 
-    return themes;
+        return themes;
 
-  }
+      }
 
-  getDefaultThemes() {
+      getDefaultThemes() {
 
-    // Gets default values for the theme list
+        // Gets default values for the theme list
 
-    var defaultThemes = [];
-    return defaultThemes;
+        var defaultThemes = [];
+        return defaultThemes;
 
-  }
+      }
 
-  /* function getActiveTheme(dateTime, themes) {
-    //
-    // Returns an apprpriate set of configuration properties listed in the themes section, if it exists
-    //
-    // Note:
-    //  a) The original version requires a time element to be listed, this version allows
-    //     for properties to be added without a time element which allows clocks to have multiple
-    //     "looks" with a definitive order in which they are applied.
-    //       timed theme >> un-timed theme >> clock >> defaults
-    //  b)
+      /* function getActiveTheme(dateTime, themes) {
+      //
+      // Returns an apprpriate set of configuration properties listed in the themes section, if it exists
+      //
+      // Note:
+      //  a) The original version requires a time element to be listed, this version allows
+      //     for properties to be added without a time element which allows clocks to have multiple
+      //     "looks" with a definitive order in which they are applied.
+      //       timed theme >> un-timed theme >> clock >> defaults
+      //  b)
 
-    var newTheme = [];
+      var newTheme = [];
 
-    if (themes) {
+      if (themes) {
       try {
-        for (var i = 0; i < themes.length; i++) {
-          if (themes[i].time) {
+      for (var i = 0; i < themes.length; i++) {
+      if (themes[i].time) {
 
-            var startTime = new Date();
-            var endTime = new Date();
+      var startTime = new Date();
+      var endTime = new Date();
 
-            startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
-            startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
-            startTime.setSeconds(0);
+      startTime.setHours((themes[i].time.split('-')[0]).split(':')[0]);
+      startTime.setMinutes((themes[i].time.split('-')[0]).split(':')[1]);
+      startTime.setSeconds(0);
 
-            endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
-            endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
-            endTime.setSeconds(0);
+      endTime.setHours((themes[i].time.split('-')[1]).split(':')[0]);
+      endTime.setMinutes((themes[i].time.split('-')[1]).split(':')[1]);
+      endTime.setSeconds(0);
 
-            if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
-              newTheme = themes[i];
-            }
-          } else {
-            newTheme = themes[i];
-          }
-        }
+      if ((endTime > startTime && (dateTime > startTime && dateTime < endTime)) || (endTime < startTime && (dateTime > startTime || dateTime < endTime))) {
+      newTheme = themes[i];
+      }
+      } else {
+      newTheme = themes[i];
+      }
+      }
       } catch (err) {}
 
       return newTheme;
-    } */
+      } */
 
-    setConfig(config) {
-
-      // Split up the configuration items into relevant objects
-
-      this._layout = updateLayout(getDefaultLayout(), config);
-      this._config = updateConfig(getDefaultConfig(), config);
-      this._themes = updateThemes(getDefaultThemes(), config);
-
-    }
-
-    getCardSize() {
-      return 3;
     }
   }
 
-  customElements.define('analog-clock-v2', AnalogClock2);
+  setConfig(config) {
+
+    // Split up the configuration items into relevant objects
+
+    this._layout = updateLayout(getDefaultLayout(), config);
+    this._config = updateConfig(getDefaultConfig(), config);
+    this._themes = updateThemes(getDefaultThemes(), config);
+
+  }
+
+  getCardSize() {
+    return 3;
+  }
+}
+
+customElements.define('analog-clock-v2', AnalogClock2);
