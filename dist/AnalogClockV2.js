@@ -7,12 +7,10 @@ class AnalogClock2 extends HTMLElement {
       // Split up configuration items for easier handling
       this._layout = updateLayout(getDefaultLayout(), this.config);
       this._config = updateConfig(getDefaultConfig(), this.config);
-      this._themes = updateThemes(getDefaultThemes(), this.config);
+      this._themes = updateThemes(getDefaultThemes(), this.config.themes);
 
-      // Create the initial ha-card
+      // Create the document elements
       this.card = this.appendChild(document.createElement('ha-card'));
-
-      // Create the nested blank element nodes
       this.content = this.card.appendChild(document.createElement('div'));
       this.canvas = this.content.appendChild(document.createElement('canvas'));
 
@@ -26,20 +24,20 @@ class AnalogClock2 extends HTMLElement {
       this.canvas.height = this._layout.diameter;
 
       // draw the clock
-      drawClock(this._layout, this._config, this.themes, this.canvas);
+      drawClock(this._layout, this._config, this._themes, this.canvas);
 
       if (this._config.hide_SecondHand) {
-        setInterval(drawClock, 10000, this._layout, this._config, this.themes, this.canvas);
+        setInterval(drawClock, 10000, this._layout, this._config, this._themes, this.canvas);
       } else {
-        setInterval(drawClock, 1000, this._layout, this._config, this.themes, this.canvas);
+        setInterval(drawClock, 1000, this._layout, this._config, this._themes, this.canvas);
       }
 
-      function drawClock(layout,config,themes,canvas) {
+      static function drawClock(layout,config,themes,canvas) {
         
         try {
 
           // Adjust radius to fit inside canvas
-          var radius = (canvas.width < canvas.height) ? canvas.width / 2.1 : canvas.height / 2.1;
+          const radius = (canvas.width < canvas.height) ? canvas.width / 2.1 : canvas.height / 2.1;
 
           // Find centre for drawing
           var ctx = canvas.getContext("2d");
@@ -47,9 +45,15 @@ class AnalogClock2 extends HTMLElement {
           ctx.textBaseline = 'middle';
           ctx.translate(canvas.width / 2, canvas.height / 2);
           
-          if (config.timezone) { options = { timeZone: timezone } };
+          const now = new luxon.DateTime.now();
+          
+          if (config.timezone) {
+            
 
-          var now = new Date();
+          const .setZone(timezone);
+          
+          
+          
           var year = now.toLocaleString('sv-SE', { year: 'numeric', timeZone: config.timezone });
           var month = now.toLocaleString('sv-SE', { month: 'numeric', timeZone: timezone });
           var day = now.toLocaleString('sv-SE', { day: 'numeric', timeZone: timezone });
@@ -76,6 +80,7 @@ class AnalogClock2 extends HTMLElement {
           drawHand(ctx, (Number(hour) + Number(minute) / 60) * 30, radius * 0.5, radius / 20, color_HourHand, style_HourHand);
           drawHand(ctx, (Number(minute) + now.getSeconds() / 60) * 6, radius * 0.8, radius / 20, color_MinuteHand, style_MinuteHand);
           if (!hide_SecondHand) { drawHand(ctx, (now.getSeconds()) * 6, radius * 0.8, 0, color_SecondHand, style_SecondHand) };
+          
         } catch (err) {
 
           ctx.font = '20px Sans-Serif';
@@ -124,12 +129,6 @@ class AnalogClock2 extends HTMLElement {
         var num;
         ctx.lineWidth = 2;
         ctx.strokeStyle = color;
-        for (num = 1; num < 13; num++) {
-          ang = num * Math.PI / 6;
-          ctx.moveTo(Math.cos(ang) * radius, Math.sin(ang) * radius);
-          ctx.lineTo(Math.cos(ang) * radius * 0.9, Math.sin(ang) * radius * 0.9);
-          ctx.stroke();
-        }
         ctx.lineWidth = 1;
         if (!hide_MinorTicks) {
           for (num = 1; num < 60; num++) {
@@ -138,6 +137,12 @@ class AnalogClock2 extends HTMLElement {
             ctx.lineTo(Math.cos(ang) * radius * 0.95, Math.sin(ang) * radius * 0.95);
             ctx.stroke();
           }
+        }
+        for (num = 1; num < 13; num++) {
+          ang = num * Math.PI / 6;
+          ctx.moveTo(Math.cos(ang) * radius, Math.sin(ang) * radius);
+          ctx.lineTo(Math.cos(ang) * radius * 0.9, Math.sin(ang) * radius * 0.9);
+          ctx.stroke();
         }
       }
 
@@ -156,7 +161,7 @@ class AnalogClock2 extends HTMLElement {
 
       function drawHand(ctx, ang, length, width, color, style) {
 
-        // Omvandla ang till radianer
+       
         var angrad = (ang - 90) * Math.PI / 180;
         width = width > 0 ? width : 1;
         ctx.beginPath();
@@ -333,6 +338,14 @@ class AnalogClock2 extends HTMLElement {
         return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
              - 3 + (week1.getDay() + 6) % 7) / 7);
       }
+      
+      function getDate(date, timezone) {
+        // Take string or date value and convert it to a date object
+        // with optional timezone.
+        var newDate = (typeof date === "string" ? new Date(date) : date);
+        if (timezone) { newDate = new Date(newDate.toLocaleString("en-GB", {timeZone: timezone} )) };
+        return newDate;
+      }
 
       function getDefaultLayout() {
 
@@ -340,7 +353,7 @@ class AnalogClock2 extends HTMLElement {
         //
         // Note:
         //  a) As the original based the size of a card on the clock diameter,
-        //     we consider diamter as part of a card "layout"
+        //     we consider diameter as part of a card "layout"
 
         var defaultLayout = [];
 
@@ -378,22 +391,24 @@ class AnalogClock2 extends HTMLElement {
         defaultConfig.color_facedigits = 'Silver';
         defaultConfig.color_digitaltime = '#CCCCCC';
 
-        defaultConfig.locale = hass.language;
+        defaultConfig.locale = Intl.DateTimeFormat().resolvedOptions().locale;
         defaultConfig.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         defaultConfig.dateformat = "";
         defaultConfig.timeformat = "";
         defaultConfig.timezonedisplayname = "";
 
         defaultConfig.show_timezone = false;
-
+        defaultConfig.show_leadingzero = false;
+        defaultConfig.show_24hour = true;
+        
+        defaultConfig.hide_date = false;
+        defaultConfig.hide_weekday = false;
         defaultConfig.hide_minorticks = false;
         defaultConfig.hide_weeknumber = true;
         defaultConfig.hide_facedigits = false;
-        defaultConfig.hide_date = false;
-        defaultConfig.hide_weekday = false;
-        defaultConfig.hide_digitaltime = false;
         defaultConfig.hide_secondhand = false;
-
+        defaultConfig.hide_digitaltime = false;
+        
         defaultConfig.style_hourhand = false;
         defaultConfig.style_minutehand = false;
         defaultConfig.style_secondhand = false;
@@ -441,6 +456,7 @@ class AnalogClock2 extends HTMLElement {
         if (newConfig.hide_weeknumber) { config.hide_weeknumber = !!(newConfig.hide_weeknumber) };
         if (newConfig.hide_facedigits) { config.hide_facedigits = !!(newConfig.hide_facedigits) };
         if (newConfig.hide_secondhand) { config.hide_secondhand = !!(newConfig.hide_secondhand) };
+        if (newConfig.hide_weeknumber) { config.hide_leadingzero = !!(newConfig.hide_leadingzero) };
         if (newConfig.hide_digitaltime) { config.hide_digitaltime = !!(newConfig.hide_digitaltime) };
 
         // Update styles
